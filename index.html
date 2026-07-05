@@ -311,14 +311,20 @@ function grade(show=true){
 function setupCanvas(canvas){
  const ctx=canvas.getContext('2d'); let drawing=false,last=null; canvas.eraser=false;
  function resize(){
-  const data=canvas.toDataURL(); const rect=canvas.getBoundingClientRect();
-  canvas.width=Math.max(600,rect.width*devicePixelRatio); canvas.height=180*devicePixelRatio;
-  ctx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);
+  const rect=canvas.getBoundingClientRect();
+  if(rect.width<1||rect.height<1) return; // hidden (display:none) - nothing to measure yet
+  const dpr=window.devicePixelRatio||1;
+  const newW=Math.round(rect.width*dpr), newH=Math.round(rect.height*dpr);
+  if(canvas.width===newW && canvas.height===newH) return; // already matches, avoid re-rasterizing
+  const data=canvas.width>0 ? canvas.toDataURL() : null;
+  canvas.width=newW; canvas.height=newH;
+  ctx.setTransform(dpr,0,0,dpr,0,0);
   ctx.lineCap='round'; ctx.lineJoin='round'; ctx.strokeStyle='#111827';
-  if(data && data.length>100){ const img=new Image(); img.onload=()=>ctx.drawImage(img,0,0,canvas.width/devicePixelRatio,canvas.height/devicePixelRatio); img.src=data; }
+  if(data && data.length>100){ const img=new Image(); img.onload=()=>ctx.drawImage(img,0,0,rect.width,rect.height); img.src=data; }
  }
+ canvas.resize=resize;
  setTimeout(resize,50); window.addEventListener('resize',resize);
- function pos(e){const r=canvas.getBoundingClientRect(); const p=e.touches?e.touches[0]:e; return {x:p.clientX-r.left,y:p.clientY-r.top};}
+ function pos(e){const r=canvas.getBoundingClientRect(); const dpr=window.devicePixelRatio||1; if(canvas.width!==Math.round(r.width*dpr)||canvas.height!==Math.round(r.height*dpr)) resize(); const p=e.touches?e.touches[0]:e; return {x:p.clientX-r.left,y:p.clientY-r.top};}
  function strokeTo(p){
   ctx.save();
   ctx.globalCompositeOperation=canvas.eraser?'destination-out':'source-over';
@@ -340,10 +346,10 @@ $$('.toolbtn').forEach(btn=>btn.onclick=e=>{
  if(btn.dataset.mode){
   wrap.style.display=btn.dataset.mode==='draw'?'block':'none'; area.style.display=btn.dataset.mode==='text'?'block':'none';
   canvas.eraser=false; box.querySelectorAll('.toolbtn').forEach(b=>b.classList.remove('active'));
-  if(btn.dataset.mode==='draw') btn.classList.add('active');
+  if(btn.dataset.mode==='draw'){ btn.classList.add('active'); canvas.resize(); }
  }
  if(btn.dataset.eraser){
-  wrap.style.display='block'; area.style.display='none'; canvas.eraser=!canvas.eraser;
+  wrap.style.display='block'; area.style.display='none'; canvas.eraser=!canvas.eraser; canvas.resize();
   box.querySelectorAll('.toolbtn').forEach(b=>b.classList.remove('active'));
   if(canvas.eraser){btn.classList.add('active'); toast('스마트펜 부분 지우개가 켜졌어요. 지우고 싶은 부분을 문질러 주세요.');}
   else {toast('부분 지우개가 꺼졌어요.');}
