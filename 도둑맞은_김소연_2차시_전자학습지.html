@@ -1,0 +1,386 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>도둑맞은 김소연 2차시 전자 학습지</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jua&family=Gaegu:wght@400;700&family=Noto+Sans+KR:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg1:#fff3d6; --bg2:#dff5ff; --ink:#26324a; --mint:#35c4b5; --mint2:#e3fbf7;
+  --peach:#ffd5b8; --yellow:#ffe998; --blue:#bcd7ff; --pink:#ffd5ea; --purple:#e2d6ff;
+  --green:#77d46b; --line:#25a99d; --danger:#ff6b6b; --good:#22c55e;
+  --shadow:0 16px 34px rgba(30,64,175,.14); --radius:26px;
+}
+*{box-sizing:border-box}
+body{margin:0; font-family:'Noto Sans KR',system-ui,-apple-system,sans-serif; color:var(--ink); background:
+  radial-gradient(circle at 8% 8%, #fff2b8 0 13%, transparent 14%),
+  radial-gradient(circle at 92% 6%, #cce9ff 0 11%, transparent 12%),
+  radial-gradient(circle at 85% 70%, #ffd9ec 0 10%, transparent 11%),
+  radial-gradient(circle at 4% 60%, #d7ffe9 0 9%, transparent 10%),
+  linear-gradient(135deg,var(--bg1),var(--bg2)); min-height:100vh; overflow-x:hidden; position:relative;}
+button,input,textarea{font-family:inherit}
+.bgdeco{position:fixed; inset:0; pointer-events:none; z-index:0; overflow:hidden}
+.cloud{position:absolute; opacity:.55; animation:drift linear infinite}
+.star{position:absolute; animation:twinkle ease-in-out infinite}
+@keyframes drift{from{transform:translateX(-10vw)}to{transform:translateX(110vw)}}
+@keyframes twinkle{0%,100%{opacity:.25; transform:scale(.85)}50%{opacity:1; transform:scale(1.15)}}
+@keyframes bob{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-10px) rotate(2deg)}}
+@keyframes wave{0%,100%{transform:rotate(0deg)}50%{transform:rotate(18deg)}}
+@keyframes pop{0%{transform:scale(.4) rotate(-8deg); opacity:0}70%{transform:scale(1.12) rotate(3deg); opacity:1}100%{transform:scale(1) rotate(0)}}
+@keyframes floatUp{0%{transform:translateY(0) scale(1); opacity:1}100%{transform:translateY(-140px) scale(1.4); opacity:0}}
+@keyframes wiggle{0%,100%{transform:rotate(-3deg)}50%{transform:rotate(3deg)}}
+@keyframes balloonFloat{0%,100%{transform:translateY(0) rotate(-4deg)}50%{transform:translateY(-26px) rotate(4deg)}}
+.balloon{position:absolute; font-size:36px; animation:balloonFloat ease-in-out infinite; opacity:.85}
+.rainbow{position:absolute; top:-60px; left:50%; transform:translateX(-50%); width:min(720px,90vw); opacity:.5}
+.card{transition:transform .15s}
+.card:hover{transform:translateY(-3px)}
+.card:before{content:"⭐"; position:absolute; top:8px; right:14px; font-size:24px; animation:wiggle 3s ease-in-out infinite; z-index:2; pointer-events:none}
+.wrap{width:min(1160px,94vw); margin:0 auto; padding:26px 0 70px; position:relative; z-index:1}
+.hero{position:relative; display:grid; grid-template-columns: 150px 1fr auto; gap:22px; align-items:center; padding:24px; background:rgba(255,255,255,.82); border:5px solid #fff; border-radius:34px; box-shadow:var(--shadow); overflow:hidden;}
+.hero:before{content:""; position:absolute; inset:auto -60px -100px auto; width:280px; height:280px; border-radius:50%; background:rgba(255,213,234,.55)}
+.hero:after{content:"✨"; position:absolute; top:14px; right:180px; font-size:26px; animation:twinkle 2.4s ease-in-out infinite}
+.mascot-avatar{width:132px; filter:drop-shadow(0 10px 10px rgba(0,0,0,.12)); animation:bob 3.2s ease-in-out infinite}
+h1{font-family:'Jua'; margin:0; font-size:clamp(34px,5.6vw,68px); letter-spacing:-2px; color:#111827; text-shadow:4px 4px 0 #fff, 8px 8px 0 rgba(53,196,181,.18)}
+.subtitle{margin-top:6px; font-weight:800; font-size:18px; color:#475569; font-family:'Gaegu'}
+.idbox{position:relative; display:grid; grid-template-columns:90px 190px; gap:10px; align-items:center; background:#d7e7ff; padding:14px 16px; border-radius:20px; font-family:'Jua'; font-size:22px; z-index:1; border:3px solid #fff; box-shadow:0 6px 0 rgba(30,64,175,.08)}
+.idbox input{width:100%; border:0; border-bottom:3px dashed #475569; background:transparent; font-size:19px; padding:6px 2px; outline:none}
+.tabs{display:flex; gap:10px; flex-wrap:wrap; margin:22px 0}
+.tab{border:0; padding:13px 20px; border-radius:999px; font-weight:900; background:#fff; box-shadow:0 8px 18px rgba(0,0,0,.08); cursor:pointer; transition:transform .15s, box-shadow .15s}
+.tab:hover{transform:translateY(-2px) scale(1.03)}
+.tab.active{background:#111827; color:#fff}
+.panel{display:none}.panel.active{display:block}
+.card{background:rgba(255,255,255,.92); border:5px solid #fff; border-radius:var(--radius); box-shadow:var(--shadow); margin:20px 0; overflow:hidden; position:relative}
+.section-title{font-family:'Jua'; font-size:30px; letter-spacing:-1px; padding:14px 18px; display:flex; align-items:center; gap:12px}
+.section-title .sicon{width:46px; height:46px; flex:none; filter:drop-shadow(0 4px 4px rgba(0,0,0,.12))}
+.peach{background:var(--peach)} .yellow{background:var(--yellow)} .blue{background:var(--blue)} .pink{background:var(--pink)}
+.question{margin:18px; padding:14px 16px; border:4px solid var(--green); border-radius:16px; background:#fff; font-family:'Jua'; font-size:25px; position:relative}
+.question:before{content:"🐰"; position:absolute; top:-22px; left:-10px; font-size:30px; animation:wiggle 2.6s ease-in-out infinite}
+.answer{margin:18px; border:3px solid var(--line); border-radius:18px; overflow:hidden; background:#fff}
+.answer-head{display:flex; justify-content:space-between; gap:10px; align-items:center; padding:12px 14px; background:var(--mint2); border-bottom:2px solid var(--line); font-weight:900}
+.answer-head .prefix{font-family:'Jua'; font-size:23px}
+.tools{display:flex; flex-wrap:wrap; gap:8px}
+.toolbtn{border:2px solid #0f766e; background:#fff; border-radius:12px; padding:8px 11px; font-weight:900; cursor:pointer; transition:transform .12s}
+.toolbtn:hover{background:#ecfeff; transform:translateY(-1px)}
+.toolbtn.active{background:#111827;color:#fff;border-color:#111827;box-shadow:0 4px 0 rgba(0,0,0,.12)}
+.editor{display:grid; grid-template-columns:1fr; gap:0}
+textarea{width:100%; min-height:132px; resize:vertical; border:0; outline:0; padding:10px 16px 8px; font-size:19px; line-height:32px; font-family:'Gaegu',inherit; background-color:#fff;
+  background-image:linear-gradient(to bottom, transparent 31px, #cfe8e4 31px, #cfe8e4 32px, transparent 32px);
+  background-size:100% 32px; background-position:0 10px; background-attachment:local}
+.canvas-wrap{display:none; padding:12px; background:#fff}
+canvas.draw{width:100%; height:202px; border:2px dashed #99f6e4; border-radius:14px; touch-action:none; background-color:#fff;
+  background-image:linear-gradient(to bottom, transparent 31px, #cfe8e4 31px, #cfe8e4 32px, transparent 32px);
+  background-size:100% 32px; background-position:0 10px}
+.hint{margin:12px 18px 18px; color:#64748b; font-size:14px; display:flex; align-items:center; gap:8px}.hint b{color:#0f766e}
+.result{margin:14px 18px; padding:14px 16px; border-radius:16px; background:#f8fafc; border:2px solid #e2e8f0; font-weight:800; display:none; align-items:center; gap:12px}
+.result.good{background:#ecfdf5; border-color:#86efac}.result.mid{background:#fffbeb; border-color:#fde68a}.result.bad{background:#fef2f2; border-color:#fecaca}
+.result.show{display:flex; animation:pop .4s ease}
+.stamp{font-family:'Jua'; font-size:15px; padding:6px 10px; border-radius:999px; flex:none; white-space:nowrap}
+.stamp.good{background:#22c55e; color:#fff}.stamp.mid{background:#f59e0b; color:#fff}.stamp.bad{background:#ef4444; color:#fff}
+.actions{display:flex; gap:12px; flex-wrap:wrap; justify-content:center; margin:26px 0}
+.bigbtn{border:0; border-radius:20px; padding:16px 26px; font-weight:900; font-size:20px; cursor:pointer; box-shadow:0 10px 18px rgba(0,0,0,.12); transition:transform .12s}
+.bigbtn:hover{transform:translateY(-2px) scale(1.02)}
+.submit{background:#111827; color:#fff}.save{background:#35c4b5; color:#073b37}.reset{background:#fff; color:#b91c1c; border:3px solid #fecaca}
+.rubric{display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin:18px}
+.rubric div{background:#fff; border:2px dashed #cbd5e1; border-radius:18px; padding:14px; min-height:90px}
+.rubric strong{display:block; font-family:'Jua'; font-size:22px; margin-bottom:4px}.tag{display:inline-block;background:#e0f2fe;border-radius:999px;padding:4px 8px;margin:2px;font-size:13px;font-weight:800}
+.teacher-login{display:grid; gap:12px; max-width:430px; margin:20px auto; background:#fff; border-radius:26px; padding:26px; box-shadow:var(--shadow); text-align:center; border:4px solid #fff}
+.teacher-login input{font-size:24px; padding:12px; border:3px solid #cbd5e1; border-radius:14px; text-align:center}
+.dash{display:none}.dashbar{display:flex; gap:12px; flex-wrap:wrap; align-items:center; justify-content:space-between; margin:14px 0}.stat{background:#fff;border-radius:18px;padding:12px 16px;font-weight:900;box-shadow:0 6px 16px rgba(0,0,0,.07)}
+table{width:100%; border-collapse:separate; border-spacing:0 10px} th{text-align:left; padding:8px; font-size:14px; color:#64748b}td{background:#fff; padding:12px; border-top:2px solid #e2e8f0; border-bottom:2px solid #e2e8f0; vertical-align:top}td:first-child{border-left:2px solid #e2e8f0;border-radius:14px 0 0 14px}td:last-child{border-right:2px solid #e2e8f0;border-radius:0 14px 14px 0}.small{font-size:13px;color:#64748b}.pill{display:inline-block;border-radius:999px;padding:4px 9px;font-weight:900}.ok{background:#dcfce7;color:#166534}.no{background:#fee2e2;color:#991b1b}.maybe{background:#fef3c7;color:#92400e}
+details{background:#f8fafc;border-radius:12px;padding:8px;margin-top:8px}summary{cursor:pointer;font-weight:900}.answer-view{white-space:pre-wrap; line-height:1.55; margin:8px 0}.draw-thumb{max-width:100%; border:1px solid #cbd5e1; border-radius:8px; background:#fff}
+.char{position:fixed; right:16px; bottom:16px; width:150px; text-align:center; z-index:5; cursor:pointer}
+.char .foxwrap{animation:bob 3s ease-in-out infinite}
+.char svg{width:100%; filter:drop-shadow(0 10px 12px rgba(0,0,0,.16))}
+.char .bubble{font-family:'Jua'; font-size:14px; background:#fff; border:3px solid #111827; border-radius:16px; padding:8px 10px; margin-top:4px; box-shadow:0 6px 0 rgba(0,0,0,.08); position:relative}
+.toast{position:fixed; left:50%; bottom:28px; transform:translateX(-50%); background:#111827; color:#fff; padding:12px 20px; border-radius:999px; font-weight:900; display:none; z-index:9; font-family:'Jua'; font-size:15px}
+.confetti{position:fixed; font-size:26px; pointer-events:none; z-index:8; animation:floatUp 1.1s ease-out forwards}
+@media(max-width:820px){.hero{grid-template-columns:1fr;text-align:center}.mascot-avatar{margin:auto}.idbox{grid-template-columns:70px 1fr}.rubric{grid-template-columns:1fr}.char{display:none}h1{font-size:44px}.question{font-size:22px}.section-title{font-size:25px}table{font-size:13px}}
+@media print{.tabs,.actions,.char,.teacher-login,.dashbar .bigbtn,.tools,.bgdeco{display:none!important}body{background:#fff}.panel{display:block}.card,.hero{box-shadow:none;break-inside:avoid}.wrap{width:100%;padding:0}.answer textarea{min-height:90px}}
+</style>
+</head>
+<body>
+
+<div class="bgdeco" aria-hidden="true">
+  <svg class="cloud" style="top:6%;left:0;width:120px;animation-duration:38s" viewBox="0 0 100 60"><ellipse cx="30" cy="35" rx="28" ry="18" fill="#fff"/><ellipse cx="55" cy="28" rx="24" ry="20" fill="#fff"/><ellipse cx="75" cy="38" rx="20" ry="14" fill="#fff"/></svg>
+  <svg class="cloud" style="top:16%;left:0;width:90px;animation-duration:52s;animation-delay:6s" viewBox="0 0 100 60"><ellipse cx="30" cy="35" rx="28" ry="18" fill="#fff"/><ellipse cx="55" cy="28" rx="24" ry="20" fill="#fff"/><ellipse cx="75" cy="38" rx="20" ry="14" fill="#fff"/></svg>
+  <span class="star" style="top:10%;left:22%;font-size:22px;animation-duration:2.6s">⭐</span>
+  <span class="star" style="top:30%;left:88%;font-size:18px;animation-duration:3.2s;animation-delay:.5s">✨</span>
+  <span class="star" style="top:66%;left:6%;font-size:20px;animation-duration:2.8s;animation-delay:1s">💛</span>
+  <span class="star" style="top:80%;left:92%;font-size:22px;animation-duration:3.4s;animation-delay:.3s">⭐</span>
+  <span class="star" style="top:46%;left:50%;font-size:16px;animation-duration:3s;animation-delay:.7s">💗</span>
+  <svg class="rainbow" viewBox="0 0 400 140" xmlns="http://www.w3.org/2000/svg">
+    <path d="M10 140 A190 190 0 0 1 390 140" stroke="#ff8fa3" stroke-width="16" fill="none"/>
+    <path d="M28 140 A172 172 0 0 1 372 140" stroke="#ffd166" stroke-width="16" fill="none"/>
+    <path d="M46 140 A154 154 0 0 1 354 140" stroke="#8ee3c8" stroke-width="16" fill="none"/>
+    <path d="M64 140 A136 136 0 0 1 336 140" stroke="#8ec6ff" stroke-width="16" fill="none"/>
+    <path d="M82 140 A118 118 0 0 1 318 140" stroke="#d3b8ff" stroke-width="16" fill="none"/>
+  </svg>
+  <span class="balloon" style="top:38%;left:2%;animation-duration:5.6s">🎈</span>
+  <span class="balloon" style="top:58%;left:96%;animation-duration:6.2s;animation-delay:.8s">🎈</span>
+  <span class="balloon" style="top:12%;left:70%;animation-duration:6.8s;animation-delay:1.4s;font-size:28px">🎈</span>
+</div>
+
+<div class="wrap">
+  <header class="hero">
+    <svg class="mascot-avatar" viewBox="0 0 140 160" xmlns="http://www.w3.org/2000/svg">
+      <ellipse cx="70" cy="150" rx="44" ry="8" fill="#000" opacity=".07"/>
+      <path d="M35 55 L20 15 L52 40 Z" fill="#ffb37a"/>
+      <path d="M105 55 L120 15 L88 40 Z" fill="#ffb37a"/>
+      <path d="M40 58 L28 25 L54 43 Z" fill="#fff0e2"/>
+      <path d="M100 58 L112 25 L86 43 Z" fill="#fff0e2"/>
+      <ellipse cx="70" cy="90" rx="52" ry="46" fill="#ffb37a"/>
+      <path d="M25 95 C10 85 12 130 40 128 Z" fill="#ffb37a"/>
+      <path d="M115 95 C130 85 128 130 100 128 Z" fill="#ffb37a"/>
+      <path d="M70 78 C40 78 34 130 70 138 C106 130 100 78 70 78 Z" fill="#fff6ee"/>
+      <circle cx="53" cy="88" r="7" fill="#26324a"/>
+      <circle cx="87" cy="88" r="7" fill="#26324a"/>
+      <circle cx="55" cy="85" r="2" fill="#fff"/>
+      <circle cx="89" cy="85" r="2" fill="#fff"/>
+      <ellipse cx="40" cy="102" rx="8" ry="5" fill="#ffc2a3" opacity=".8"/>
+      <ellipse cx="100" cy="102" rx="8" ry="5" fill="#ffc2a3" opacity=".8"/>
+      <path d="M70 96 L64 104 L76 104 Z" fill="#26324a"/>
+      <path d="M62 112 Q70 120 78 112" stroke="#26324a" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <path d="M15 60 Q5 40 22 30" stroke="#ffb37a" stroke-width="10" fill="none" stroke-linecap="round"/>
+    </svg>
+    <div><h1>도둑맞은 김소연</h1><div class="subtitle">🦊 2차시 전자 학습지 · 정직한 용기와 진짜 우정 상담소 🐰</div></div>
+    <div class="idbox"><label>번호</label><input id="num" inputmode="numeric" placeholder="예: 12"><label>이름</label><input id="name" placeholder="김소연"></div>
+  </header>
+
+  <nav class="tabs">
+    <button class="tab active" data-tab="student">📝 학생 학습지</button>
+    <button class="tab" data-tab="guide">💡 채점 기준</button>
+    <button class="tab" data-tab="teacher">🔐 교사 관리</button>
+  </nav>
+
+  <main id="student" class="panel active">
+    <section class="card">
+      <div class="section-title peach">
+        <svg class="sicon" viewBox="0 0 60 60"><circle cx="30" cy="30" r="28" fill="#ffe0c2"/><circle cx="22" cy="28" r="4" fill="#26324a"/><circle cx="38" cy="28" r="4" fill="#26324a"/><path d="M22 40 Q30 46 38 40" stroke="#26324a" stroke-width="3" fill="none" stroke-linecap="round"/><ellipse cx="15" cy="34" rx="4" ry="3" fill="#ffb3c6"/><ellipse cx="45" cy="34" rx="4" ry="3" fill="#ffb3c6"/></svg>
+        1-1. 두근두근 상담 전, 상담자에 대해 파.악 완.료.
+      </div>
+      <div class="question">Q. 소연이의 심장이 ‘쿵쿵’ 뛴 진짜 이유는?</div>
+      <div class="answer" data-q="q1">
+        <div class="answer-head"><span class="prefix">A. 11년 차 상담 전문가인 제 생각을 말씀드리겠습니다.</span><span class="tools"><button class="toolbtn" data-mode="text">⌨️ 글자</button><button class="toolbtn" data-mode="draw">✍️ 스마트펜</button><button class="toolbtn" data-eraser="partial">🧽 부분 지우기</button><button class="toolbtn" data-clear="answer">🗑️ 이 칸 전체 지우기</button></span></div>
+        <div class="editor"><textarea id="q1" placeholder="예) 주희에게 사실대로 말하지 못하고 거짓말을 해서 미안함과 불안함을 느꼈기 때문입니다."></textarea><div class="canvas-wrap"><canvas class="draw" id="c1"></canvas></div></div>
+      </div>
+      <div id="r1" class="result"></div>
+      <div class="hint">🔎 자동 채점 힌트: <b>거짓말, 주희, 미안, 불안, 죄책감</b> 같은 핵심 단어가 들어가면 좋아요.</div>
+    </section>
+
+    <section class="card">
+      <div class="section-title peach">
+        <svg class="sicon" viewBox="0 0 60 60"><rect x="10" y="14" width="40" height="32" rx="6" fill="#ffffff" stroke="#ffb37a" stroke-width="3"/><path d="M10 18 L30 34 L50 18" stroke="#ffb37a" stroke-width="3" fill="none"/><circle cx="46" cy="12" r="3" fill="#ff6b6b"/></svg>
+        1-2. 꿀팁 처방: 주희에게 보내는 ‘진심 어린 사과 톡’
+      </div>
+      <div class="answer" data-q="q2">
+        <div class="answer-head"><span class="prefix">주희야 안녕! 나 소연이야. 사실은 나 너에게 할 말이 있어.</span><span class="tools"><button class="toolbtn" data-mode="text">⌨️ 글자</button><button class="toolbtn" data-mode="draw">✍️ 스마트펜</button><button class="toolbtn" data-eraser="partial">🧽 부분 지우기</button><button class="toolbtn" data-clear="answer">🗑️ 이 칸 전체 지우기</button></span></div>
+        <textarea id="q2" placeholder="예) 전학생 소연이와 단둘이 집에 가고 싶어서 너에게 수학 학원에 간다고 거짓말했어. 너를 속여서 정말 미안해. 네 마음이 많이 속상했을 것 같아. 앞으로는 친구에게 솔직하게 말하고, 다시 너와 믿을 수 있는 친구가 되고 싶어."></textarea><div class="canvas-wrap"><canvas class="draw" id="c2"></canvas></div>
+      </div>
+      <div id="r2" class="result"></div>
+      <div class="hint">🔎 자동 채점 힌트: <b>미안, 거짓말, 솔직, 속상, 다시, 친구</b> 같은 말이 들어가면 좋아요.</div>
+    </section>
+
+    <section class="card">
+      <div class="section-title yellow">
+        <svg class="sicon" viewBox="0 0 60 60"><ellipse cx="30" cy="33" rx="26" ry="22" fill="#fff3c4"/><path d="M14 20 L18 4 L26 18 Z" fill="#fff3c4"/><path d="M46 20 L42 4 L34 18 Z" fill="#fff3c4"/><circle cx="22" cy="30" r="4" fill="#26324a"/><circle cx="38" cy="30" r="4" fill="#26324a"/><path d="M22 42 Q30 47 38 42" stroke="#26324a" stroke-width="3" fill="none" stroke-linecap="round"/></svg>
+        2-1. 두근두근 상담 전, 상담자에 대해 파.악 완.료.
+      </div>
+      <div class="question">Q. 내가 만약 생일 파티에 ‘초대받지 못한 등급의 친구’라면?</div>
+      <div class="answer" data-q="q3">
+        <div class="answer-head"><span class="prefix">A. 공감능력 100점! 상담가인 제가 말씀드리겠습니다.</span><span class="tools"><button class="toolbtn" data-mode="text">⌨️ 글자</button><button class="toolbtn" data-mode="draw">✍️ 스마트펜</button><button class="toolbtn" data-eraser="partial">🧽 부분 지우기</button><button class="toolbtn" data-clear="answer">🗑️ 이 칸 전체 지우기</button></span></div>
+        <textarea id="q3" placeholder="예) 내가 친구에게 등급을 매겨 초대받지 못한다면 무시당한 것 같고 속상할 것 같습니다. 친구가 나를 있는 그대로 봐 주지 않는 것 같아 마음이 아플 것 같습니다."></textarea><div class="canvas-wrap"><canvas class="draw" id="c3"></canvas></div>
+      </div>
+      <div id="r3" class="result"></div>
+      <div class="hint">🔎 자동 채점 힌트: <b>속상, 무시, 차별, 상처, 기분</b> 같은 마음 단어가 들어가면 좋아요.</div>
+    </section>
+
+    <section class="card">
+      <div class="section-title yellow">
+        <svg class="sicon" viewBox="0 0 60 60"><rect x="10" y="14" width="40" height="32" rx="6" fill="#ffffff" stroke="#f4b400" stroke-width="3"/><path d="M10 18 L30 34 L50 18" stroke="#f4b400" stroke-width="3" fill="none"/><path d="M42 8 L46 16 L38 16 Z" fill="#f4b400"/></svg>
+        2-2. 꿀팁 처방: 전학생에게 보내는 ‘사이다&amp;진심 톡’
+      </div>
+      <div class="answer" data-q="q4">
+        <div class="answer-head"><span class="prefix">소연아 안녕. 친구들을 사귀는 너의 방법에 대해 해주고 싶은 말이 있어.</span><span class="tools"><button class="toolbtn" data-mode="text">⌨️ 글자</button><button class="toolbtn" data-mode="draw">✍️ 스마트펜</button><button class="toolbtn" data-eraser="partial">🧽 부분 지우기</button><button class="toolbtn" data-clear="answer">🗑️ 이 칸 전체 지우기</button></span></div>
+        <textarea id="q4" placeholder="예) 친구를 인기나 외모, 성적으로 나누는 것은 옳지 않아. 그렇게 하면 초대받지 못한 친구들은 상처받고 교실의 믿음도 깨질 수 있어. 진짜 우정은 친구를 있는 그대로 존중하고 배려하는 마음에서 시작된다고 생각해."></textarea><div class="canvas-wrap"><canvas class="draw" id="c4"></canvas></div>
+      </div>
+      <div id="r4" class="result"></div>
+      <div class="hint">🔎 자동 채점 힌트: <b>등급, 차별, 상처, 존중, 배려, 우정</b> 같은 핵심 단어가 들어가면 좋아요.</div>
+    </section>
+
+    <div class="actions"><button class="bigbtn save" id="checkBtn">✨ 자동 채점하기</button><button class="bigbtn submit" id="submitBtn">📮 선생님께 제출하기</button><button class="bigbtn reset" id="clearBtn">🧽 내 답 지우기</button></div>
+  </main>
+
+  <section id="guide" class="panel">
+    <div class="card"><div class="section-title blue">💡 자동 채점 핵심 단어</div>
+      <div class="rubric">
+        <div><strong>1-1 마음 파악</strong><span class="tag">거짓말</span><span class="tag">주희</span><span class="tag">미안</span><span class="tag">불안</span><span class="tag">죄책감</span><p>소연이가 왜 마음이 무거웠는지 원인을 설명하면 좋아요.</p></div>
+        <div><strong>1-2 사과 톡</strong><span class="tag">미안</span><span class="tag">거짓말</span><span class="tag">솔직</span><span class="tag">속상</span><span class="tag">다시</span><p>잘못 인정, 상대 마음 공감, 앞으로의 약속이 들어가면 좋아요.</p></div>
+        <div><strong>2-1 공감</strong><span class="tag">속상</span><span class="tag">무시</span><span class="tag">차별</span><span class="tag">상처</span><span class="tag">기분</span><p>초대받지 못한 친구의 마음을 내 입장에서 말해요.</p></div>
+        <div><strong>2-2 조언 톡</strong><span class="tag">등급</span><span class="tag">차별</span><span class="tag">상처</span><span class="tag">존중</span><span class="tag">배려</span><span class="tag">우정</span><p>잘못을 짚되, 진짜 우정의 의미를 따뜻하게 알려줘요.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="teacher" class="panel">
+    <div class="teacher-login" id="loginBox"><h2>🔐 교사 관리 대시보드</h2><p>비밀번호를 입력하면 제출 현황을 볼 수 있습니다.</p><input id="pw" type="password" inputmode="numeric" placeholder="비밀번호"><button class="bigbtn submit" id="loginBtn">입장하기</button><p class="small">※ 기본 비밀번호: 0402</p></div>
+    <div class="dash" id="dash">
+      <div class="dashbar"><div><span class="stat" id="countStat">제출 0명</span> <span class="stat" id="avgStat">평균 0점</span></div><div><button class="bigbtn save" id="csvBtn">CSV 내려받기</button><button class="bigbtn reset" id="wipeBtn">제출 자료 전체 삭제</button></div></div>
+      <div class="card"><div class="section-title pink">📊 제출 현황</div><div style="overflow:auto;padding:0 18px 18px"><table><thead><tr><th>학생</th><th>점수</th><th>1-1</th><th>1-2</th><th>2-1</th><th>2-2</th><th>자세히</th></tr></thead><tbody id="rows"></tbody></table></div></div>
+    </div>
+  </section>
+</div>
+
+<div class="char" id="charBox">
+  <div class="bubble" id="charBubble">솔직하게 쓰면<br>마음이 반짝! ✨</div>
+  <div class="foxwrap">
+    <svg viewBox="0 0 140 150" xmlns="http://www.w3.org/2000/svg">
+      <ellipse cx="70" cy="142" rx="44" ry="7" fill="#000" opacity=".08"/>
+      <path d="M35 50 L20 12 L52 36 Z" fill="#ffb37a"/>
+      <path d="M105 50 L120 12 L88 36 Z" fill="#ffb37a"/>
+      <path d="M40 53 L28 22 L54 39 Z" fill="#fff0e2"/>
+      <path d="M100 53 L112 22 L86 39 Z" fill="#fff0e2"/>
+      <ellipse cx="70" cy="84" rx="50" ry="44" fill="#ffb37a"/>
+      <path d="M25 88 C10 78 12 122 40 120 Z" fill="#ffb37a"/>
+      <path d="M115 88 C130 78 128 122 100 120 Z" fill="#ffb37a"/>
+      <path d="M70 72 C40 72 34 122 70 130 C106 122 100 72 70 72 Z" fill="#fff6ee"/>
+      <circle cx="53" cy="82" r="7" fill="#26324a"/>
+      <circle cx="87" cy="82" r="7" fill="#26324a"/>
+      <circle cx="55" cy="79" r="2" fill="#fff"/>
+      <circle cx="89" cy="79" r="2" fill="#fff"/>
+      <ellipse cx="40" cy="95" rx="8" ry="5" fill="#ffc2a3" opacity=".8"/>
+      <ellipse cx="100" cy="95" rx="8" ry="5" fill="#ffc2a3" opacity=".8"/>
+      <path d="M70 89 L64 97 L76 97 Z" fill="#26324a"/>
+      <path d="M62 105 Q70 113 78 105" stroke="#26324a" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <g style="transform-origin:22px 68px; animation:wave 2.2s ease-in-out infinite">
+        <path d="M20 68 Q4 50 20 34" stroke="#ffb37a" stroke-width="11" fill="none" stroke-linecap="round"/>
+        <circle cx="20" cy="34" r="7" fill="#ffb37a"/>
+      </g>
+    </svg>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+const PASSWORD='0402';
+const rules={
+ q1:['거짓말','주희','미안','불안','죄책감','두려','속였','걱정','마음'],
+ q2:['미안','거짓말','솔직','속상','다시','친구','사과','용서','잘못','믿음'],
+ q3:['속상','무시','차별','상처','기분','슬프','서운','화','외롭'],
+ q4:['등급','차별','상처','존중','배려','우정','친구','믿음','옳지','있는 그대로']
+};
+const labels={q1:'1-1',q2:'1-2',q3:'2-1',q4:'2-2'};
+const $=s=>document.querySelector(s); const $$=s=>Array.from(document.querySelectorAll(s));
+function toast(t){const el=$('#toast'); el.textContent=t; el.style.display='block'; setTimeout(()=>el.style.display='none',1800)}
+
+const foxLines=['솔직하게 쓰면<br>마음이 반짝! ✨','천천히 써도<br>괜찮아요 🐾','네 마음을 담아<br>적어보자! 💌','와, 집중하고 있구나! 👀','거의 다 왔어,<br>힘내! 💪'];
+let foxIdx=0;
+function cycleFox(){ foxIdx=(foxIdx+1)%foxLines.length; $('#charBubble').innerHTML=foxLines[foxIdx]; }
+setInterval(cycleFox,5000);
+$('#charBox').addEventListener('click',cycleFox);
+
+function burstConfetti(emojis){
+  const box=document.body;
+  for(let i=0;i<14;i++){
+    const s=document.createElement('span');
+    s.className='confetti'; s.textContent=emojis[Math.floor(Math.random()*emojis.length)];
+    s.style.left=(40+Math.random()*20)+'vw'; s.style.top=(70+Math.random()*10)+'vh';
+    s.style.animationDelay=(Math.random()*.3)+'s';
+    box.appendChild(s); setTimeout(()=>s.remove(),1400);
+  }
+}
+
+$$('.tab').forEach(b=>b.onclick=()=>{ $$('.tab').forEach(x=>x.classList.remove('active')); b.classList.add('active'); $$('.panel').forEach(p=>p.classList.remove('active')); $('#'+b.dataset.tab).classList.add('active'); if(b.dataset.tab==='teacher') renderDash(); });
+function scoreOne(q,text){ const norm=(text||'').replace(/\s/g,'').toLowerCase(); let hit=rules[q].filter(k=>norm.includes(k.toLowerCase())); let score=Math.min(25, Math.round(hit.length/Math.min(5,rules[q].length)*25)); return {score,hit,missing:rules[q].filter(k=>!hit.includes(k))}; }
+function grade(show=true){
+ let total=0, detail={};
+ ['q1','q2','q3','q4'].forEach((q,i)=>{
+  const res=scoreOne(q,$('#'+q).value); detail[q]=res; total+=res.score;
+  if(show){
+   const el=$('#r'+(i+1));
+   const tier=res.score>=20?'good':res.score>=10?'mid':'bad';
+   const stampText=tier==='good'?'GREAT! 🌟':tier==='mid'?'GOOD! 👍':'다시 도전! 💪';
+   el.classList.remove('show'); el.className='result '+tier;
+   el.innerHTML=`<span class="stamp ${tier}">${stampText}</span><span>${labels[q]} 점수: <b>${res.score}/25점</b> · 찾은 핵심어: ${res.hit.length?res.hit.map(x=>'#'+x).join(' '):'아직 없음'}<br><span class="small">더 넣어 보면 좋은 말: ${res.missing.slice(0,4).join(', ')||'충분해요!'}</span></span>`;
+   requestAnimationFrame(()=>el.classList.add('show'));
+  }
+ });
+ return {total,detail};
+}
+function setupCanvas(canvas){
+ const ctx=canvas.getContext('2d'); let drawing=false,last=null; canvas.eraser=false;
+ function resize(){
+  const data=canvas.toDataURL(); const rect=canvas.getBoundingClientRect();
+  canvas.width=Math.max(600,rect.width*devicePixelRatio); canvas.height=180*devicePixelRatio;
+  ctx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);
+  ctx.lineCap='round'; ctx.lineJoin='round'; ctx.strokeStyle='#111827';
+  if(data && data.length>100){ const img=new Image(); img.onload=()=>ctx.drawImage(img,0,0,canvas.width/devicePixelRatio,canvas.height/devicePixelRatio); img.src=data; }
+ }
+ setTimeout(resize,50); window.addEventListener('resize',resize);
+ function pos(e){const r=canvas.getBoundingClientRect(); const p=e.touches?e.touches[0]:e; return {x:p.clientX-r.left,y:p.clientY-r.top};}
+ function strokeTo(p){
+  ctx.save();
+  ctx.globalCompositeOperation=canvas.eraser?'destination-out':'source-over';
+  ctx.lineWidth=canvas.eraser?22:3;
+  ctx.strokeStyle=canvas.eraser?'rgba(0,0,0,1)':'#111827';
+  ctx.beginPath(); ctx.moveTo(last.x,last.y); ctx.lineTo(p.x,p.y); ctx.stroke();
+  ctx.restore();
+ }
+ function start(e){drawing=true;last=pos(e);e.preventDefault()}
+ function move(e){if(!drawing)return; const p=pos(e); strokeTo(p); last=p; e.preventDefault()}
+ function end(){drawing=false; last=null}
+ canvas.addEventListener('pointerdown',start); canvas.addEventListener('pointermove',move); canvas.addEventListener('pointerup',end); canvas.addEventListener('pointerleave',end);
+ canvas.clear=()=>ctx.clearRect(0,0,canvas.width,canvas.height);
+ canvas.isBlank=()=>{try{return canvas.toDataURL().length<9000}catch(e){return true}};
+}
+$$('canvas.draw').forEach(setupCanvas);
+$$('.toolbtn').forEach(btn=>btn.onclick=e=>{
+ const box=btn.closest('.answer'); const canvas=box.querySelector('canvas'); const wrap=box.querySelector('.canvas-wrap'); const area=box.querySelector('textarea');
+ if(btn.dataset.mode){
+  wrap.style.display=btn.dataset.mode==='draw'?'block':'none'; area.style.display=btn.dataset.mode==='text'?'block':'none';
+  canvas.eraser=false; box.querySelectorAll('.toolbtn').forEach(b=>b.classList.remove('active'));
+  if(btn.dataset.mode==='draw') btn.classList.add('active');
+ }
+ if(btn.dataset.eraser){
+  wrap.style.display='block'; area.style.display='none'; canvas.eraser=!canvas.eraser;
+  box.querySelectorAll('.toolbtn').forEach(b=>b.classList.remove('active'));
+  if(canvas.eraser){btn.classList.add('active'); toast('스마트펜 부분 지우개가 켜졌어요. 지우고 싶은 부분을 문질러 주세요.');}
+  else {toast('부분 지우개가 꺼졌어요.');}
+ }
+ if(btn.dataset.clear==='answer'){
+  if(confirm('이 칸의 글자 답과 손글씨를 모두 지울까요?')){ area.value=''; canvas.clear(); saveLocal(); toast('이 칸을 깨끗하게 지웠어요'); }
+ }
+});
+function getDrawings(){return {q1:$('#c1').toDataURL(),q2:$('#c2').toDataURL(),q3:$('#c3').toDataURL(),q4:$('#c4').toDataURL()}}
+function saveLocal(){ const data={num:$('#num').value,name:$('#name').value,answers:{q1:$('#q1').value,q2:$('#q2').value,q3:$('#q3').value,q4:$('#q4').value},drawings:getDrawings(),savedAt:new Date().toLocaleString('ko-KR'),grade:grade(false)}; localStorage.setItem('kimsoyeon2_draft',JSON.stringify(data)); }
+function loadLocal(){ const raw=localStorage.getItem('kimsoyeon2_draft'); if(!raw)return; try{const d=JSON.parse(raw); $('#num').value=d.num||''; $('#name').value=d.name||''; Object.entries(d.answers||{}).forEach(([k,v])=>$('#'+k).value=v||'');}catch(e){} }
+['num','name','q1','q2','q3','q4'].forEach(id=>$('#'+id).addEventListener('input',saveLocal)); loadLocal();
+$('#checkBtn').onclick=()=>{
+ const g=grade(true); toast(`자동 채점 완료! 총 ${g.total}점`); saveLocal();
+ if(g.total>=80){ $('#charBubble').innerHTML='우와, 정말<br>훌륭해요! 🏆'; burstConfetti(['🎉','⭐','🌟','💛']); }
+ else if(g.total>=50){ $('#charBubble').innerHTML='좋아요!<br>조금만 더! 👍'; }
+ else { $('#charBubble').innerHTML='핵심 단어를<br>더 넣어볼까? 🐾'; }
+};
+$('#submitBtn').onclick=()=>{
+ if(!$('#name').value.trim()){toast('이름을 먼저 써 주세요'); return;}
+ const g=grade(true);
+ const sub={id:Date.now(),num:$('#num').value.trim(),name:$('#name').value.trim(),answers:{q1:$('#q1').value,q2:$('#q2').value,q3:$('#q3').value,q4:$('#q4').value},drawings:getDrawings(),grade:g,submittedAt:new Date().toLocaleString('ko-KR')};
+ const arr=JSON.parse(localStorage.getItem('kimsoyeon2_submissions')||'[]');
+ const idx=arr.findIndex(x=>x.name===sub.name && x.num===sub.num);
+ if(idx>=0) arr[idx]=sub; else arr.push(sub);
+ localStorage.setItem('kimsoyeon2_submissions',JSON.stringify(arr));
+ toast('제출했어요! 선생님 화면에서 확인할 수 있어요.');
+ $('#charBubble').innerHTML='제출 완료!<br>대단해요 🎊';
+ burstConfetti(['📮','🎉','✨']);
+};
+$('#clearBtn').onclick=()=>{ if(confirm('내가 쓴 답을 모두 지울까요?')){['num','name','q1','q2','q3','q4'].forEach(id=>$('#'+id).value=''); ['c1','c2','c3','c4'].forEach(id=>$('#'+id).clear()); localStorage.removeItem('kimsoyeon2_draft'); toast('깨끗하게 지웠어요'); }};
+$('#loginBtn').onclick=()=>{ if($('#pw').value===PASSWORD){$('#loginBox').style.display='none'; $('#dash').style.display='block'; renderDash();} else toast('비밀번호가 달라요'); };
+function cls(s){return s>=20?'ok':s>=10?'maybe':'no'} function mark(s){return `<span class="pill ${cls(s)}">${s}</span>`}
+function renderDash(){ const arr=JSON.parse(localStorage.getItem('kimsoyeon2_submissions')||'[]'); $('#countStat').textContent=`제출 ${arr.length}명`; const avg=arr.length?Math.round(arr.reduce((a,b)=>a+b.grade.total,0)/arr.length):0; $('#avgStat').textContent=`평균 ${avg}점`; $('#rows').innerHTML=arr.sort((a,b)=>(a.num||'').localeCompare(b.num||'',undefined,{numeric:true})).map(s=>`<tr><td><b>${s.num||'-'}번 ${s.name}</b><div class="small">${s.submittedAt}</div></td><td>${mark(s.grade.total)} /100</td><td>${mark(s.grade.detail.q1.score)}</td><td>${mark(s.grade.detail.q2.score)}</td><td>${mark(s.grade.detail.q3.score)}</td><td>${mark(s.grade.detail.q4.score)}</td><td><details><summary>답안 보기</summary>${['q1','q2','q3','q4'].map(q=>`<b>${labels[q]}</b><div class="answer-view">${escapeHtml(s.answers[q]||'')}</div><div class="small">핵심어: ${(s.grade.detail[q].hit||[]).join(', ')||'-'}</div><img class="draw-thumb" src="${s.drawings[q]||''}" alt="${labels[q]} 손글씨">`).join('<hr>')}</details></td></tr>`).join(''); }
+function escapeHtml(t){return (t||'').replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]))}
+$('#csvBtn').onclick=()=>{ const arr=JSON.parse(localStorage.getItem('kimsoyeon2_submissions')||'[]'); const header=['번호','이름','총점','1-1','1-2','2-1','2-2','제출시각','답1','답2','답3','답4']; const rows=arr.map(s=>[s.num,s.name,s.grade.total,s.grade.detail.q1.score,s.grade.detail.q2.score,s.grade.detail.q3.score,s.grade.detail.q4.score,s.submittedAt,s.answers.q1,s.answers.q2,s.answers.q3,s.answers.q4]); const csv=[header,...rows].map(r=>r.map(v=>'"'+String(v||'').replace(/"/g,'""')+'"').join(',')).join('\n'); const blob=new Blob(['﻿'+csv],{type:'text/csv;charset=utf-8'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='도둑맞은_김소연_2차시_제출현황.csv'; a.click(); };
+$('#wipeBtn').onclick=()=>{ if(confirm('제출 자료를 모두 삭제할까요?')){localStorage.removeItem('kimsoyeon2_submissions'); renderDash(); toast('삭제했습니다');} };
+</script>
+</body>
+</html>
