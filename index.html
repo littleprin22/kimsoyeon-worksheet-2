@@ -227,7 +227,7 @@ details{background:#f8fafc;border-radius:12px;padding:8px;margin-top:8px}summary
   <section id="teacher" class="panel">
     <div class="teacher-login" id="loginBox"><h2>🔐 교사 관리 대시보드</h2><p>비밀번호를 입력하면 제출 현황을 볼 수 있습니다.</p><input id="pw" type="password" inputmode="numeric" placeholder="비밀번호"><button class="bigbtn submit" id="loginBtn">입장하기</button><p class="small">※ 기본 비밀번호: 0402</p></div>
     <div class="dash" id="dash">
-      <div class="dashbar"><div><span class="stat" id="countStat">제출 0명</span> <span class="stat" id="avgStat">평균 0점</span></div><div><button class="bigbtn save" id="csvBtn">CSV 내려받기</button><button class="bigbtn reset" id="wipeBtn">제출 자료 전체 삭제</button></div></div>
+      <div class="dashbar"><div><span class="stat" id="countStat">제출 0명</span> <span class="stat" id="avgStat">평균 0점</span></div><div><button class="bigbtn submit" id="refreshBtn">🔄 새로고침</button><button class="bigbtn save" id="csvBtn">CSV 내려받기</button><button class="bigbtn reset" id="wipeBtn">제출 자료 전체 삭제</button></div></div>
       <div class="card"><div class="section-title pink">📊 제출 현황</div><div style="overflow:auto;padding:0 18px 18px"><table><thead><tr><th>학생</th><th>점수</th><th>1-1</th><th>1-2</th><th>2-1</th><th>2-2</th><th>자세히</th></tr></thead><tbody id="rows"></tbody></table></div></div>
     </div>
   </section>
@@ -264,6 +264,40 @@ details{background:#f8fafc;border-radius:12px;padding:8px;margin-top:8px}summary
 <div class="toast" id="toast"></div>
 <script>
 const PASSWORD='0402';
+// ⚠️ 파이어베이스 Realtime Database URL을 여기에 붙여넣으세요. (예: https://xxxx-default-rtdb.asia-southeast1.firebasedatabase.app)
+// 이 값을 채워야 학생이 어떤 기기로 접속해도 제출 내용이 선생님 대시보드에 실시간으로 모입니다.
+const FIREBASE_DB_URL='https://kimsoyeon-worksheet-default-rtdb.firebaseio.com';
+function subKey(num,name){
+ const raw=`${(num||'').toString().trim()}_${(name||'').toString().trim()}`.replace(/[.#$\[\]\/]/g,'_');
+ return raw && raw!=='_' ? raw : ('anon_'+Date.now());
+}
+async function saveSubmissionRemote(sub){
+ if(!FIREBASE_DB_URL) return false;
+ try{
+  const res=await fetch(`${FIREBASE_DB_URL}/submissions/${subKey(sub.num,sub.name)}.json`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(sub)});
+  return res.ok;
+ }catch(e){ console.error(e); return false; }
+}
+async function fetchSubmissions(){
+ if(!FIREBASE_DB_URL) return [];
+ try{
+  const res=await fetch(`${FIREBASE_DB_URL}/submissions.json`);
+  if(!res.ok) return null;
+  const data=await res.json();
+  return data?Object.values(data):[];
+ }catch(e){ console.error(e); return null; }
+}
+function sortByNum(arr){
+ return [...arr].sort((a,b)=>{
+  const av=parseInt(a.num,10), bv=parseInt(b.num,10);
+  const an=isNaN(av)?Infinity:av, bn=isNaN(bv)?Infinity:bv;
+  if(an!==bn) return an-bn;
+  return (a.name||'').localeCompare(b.name||'','ko');
+ });
+}
+let dashPoll=null;
+function startDashPoll(){ stopDashPoll(); dashPoll=setInterval(renderDash,6000); }
+function stopDashPoll(){ if(dashPoll){ clearInterval(dashPoll); dashPoll=null; } }
 const rules={
  q1:['거짓말','주희','미안','불안','죄책감','두려','속였','걱정','마음'],
  q2:['미안','거짓말','솔직','속상','다시','친구','사과','용서','잘못','믿음'],
@@ -291,7 +325,7 @@ function burstConfetti(emojis){
   }
 }
 
-$$('.tab').forEach(b=>b.onclick=()=>{ $$('.tab').forEach(x=>x.classList.remove('active')); b.classList.add('active'); $$('.panel').forEach(p=>p.classList.remove('active')); $('#'+b.dataset.tab).classList.add('active'); if(b.dataset.tab==='teacher') renderDash(); });
+$$('.tab').forEach(b=>b.onclick=()=>{ $$('.tab').forEach(x=>x.classList.remove('active')); b.classList.add('active'); $$('.panel').forEach(p=>p.classList.remove('active')); $('#'+b.dataset.tab).classList.add('active'); if(b.dataset.tab==='teacher'){ if($('#dash').style.display==='block'){ renderDash(); startDashPoll(); } } else { stopDashPoll(); } });
 function scoreOne(q,text){ const norm=(text||'').replace(/\s/g,'').toLowerCase(); let hit=rules[q].filter(k=>norm.includes(k.toLowerCase())); let score=Math.min(25, Math.round(hit.length/Math.min(5,rules[q].length)*25)); return {score,hit,missing:rules[q].filter(k=>!hit.includes(k))}; }
 function grade(show=true){
  let total=0, detail={};
@@ -368,25 +402,52 @@ $('#checkBtn').onclick=()=>{
  else if(g.total>=50){ $('#charBubble').innerHTML='좋아요!<br>조금만 더! 👍'; }
  else { $('#charBubble').innerHTML='핵심 단어를<br>더 넣어볼까? 🐾'; }
 };
-$('#submitBtn').onclick=()=>{
+$('#submitBtn').onclick=async ()=>{
  if(!$('#name').value.trim()){toast('이름을 먼저 써 주세요'); return;}
+ if(!FIREBASE_DB_URL){ toast('⚠️ 아직 제출 서버 주소가 설정되지 않았어요. 선생님께 문의하세요.'); return; }
  const g=grade(true);
- const sub={id:Date.now(),num:$('#num').value.trim(),name:$('#name').value.trim(),answers:{q1:$('#q1').value,q2:$('#q2').value,q3:$('#q3').value,q4:$('#q4').value},drawings:getDrawings(),grade:g,submittedAt:new Date().toLocaleString('ko-KR')};
- const arr=JSON.parse(localStorage.getItem('kimsoyeon2_submissions')||'[]');
- const idx=arr.findIndex(x=>x.name===sub.name && x.num===sub.num);
- if(idx>=0) arr[idx]=sub; else arr.push(sub);
- localStorage.setItem('kimsoyeon2_submissions',JSON.stringify(arr));
- toast('제출했어요! 선생님 화면에서 확인할 수 있어요.');
- $('#charBubble').innerHTML='제출 완료!<br>대단해요 🎊';
- burstConfetti(['📮','🎉','✨']);
+ const sub={num:$('#num').value.trim(),name:$('#name').value.trim(),answers:{q1:$('#q1').value,q2:$('#q2').value,q3:$('#q3').value,q4:$('#q4').value},drawings:getDrawings(),grade:g,submittedAt:new Date().toLocaleString('ko-KR'),submittedAtMs:Date.now()};
+ const btn=$('#submitBtn'); const original=btn.textContent; btn.disabled=true; btn.textContent='📮 제출 중...';
+ const ok=await saveSubmissionRemote(sub);
+ btn.disabled=false; btn.textContent=original;
+ if(ok){
+  toast('제출했어요! 선생님 화면에서 확인할 수 있어요.');
+  $('#charBubble').innerHTML='제출 완료!<br>대단해요 🎊';
+  burstConfetti(['📮','🎉','✨']);
+ } else {
+  toast('제출에 실패했어요. 인터넷 연결을 확인하고 다시 눌러주세요.');
+ }
 };
 $('#clearBtn').onclick=()=>{ if(confirm('내가 쓴 답을 모두 지울까요?')){['num','name','q1','q2','q3','q4'].forEach(id=>$('#'+id).value=''); ['c1','c2','c3','c4'].forEach(id=>$('#'+id).clear()); localStorage.removeItem('kimsoyeon2_draft'); toast('깨끗하게 지웠어요'); }};
-$('#loginBtn').onclick=()=>{ if($('#pw').value===PASSWORD){$('#loginBox').style.display='none'; $('#dash').style.display='block'; renderDash();} else toast('비밀번호가 달라요'); };
+$('#loginBtn').onclick=()=>{ if($('#pw').value===PASSWORD){$('#loginBox').style.display='none'; $('#dash').style.display='block'; renderDash(); startDashPoll();} else toast('비밀번호가 달라요'); };
 function cls(s){return s>=20?'ok':s>=10?'maybe':'no'} function mark(s){return `<span class="pill ${cls(s)}">${s}</span>`}
-function renderDash(){ const arr=JSON.parse(localStorage.getItem('kimsoyeon2_submissions')||'[]'); $('#countStat').textContent=`제출 ${arr.length}명`; const avg=arr.length?Math.round(arr.reduce((a,b)=>a+b.grade.total,0)/arr.length):0; $('#avgStat').textContent=`평균 ${avg}점`; $('#rows').innerHTML=arr.sort((a,b)=>(a.num||'').localeCompare(b.num||'',undefined,{numeric:true})).map(s=>`<tr><td><b>${s.num||'-'}번 ${s.name}</b><div class="small">${s.submittedAt}</div></td><td>${mark(s.grade.total)} /100</td><td>${mark(s.grade.detail.q1.score)}</td><td>${mark(s.grade.detail.q2.score)}</td><td>${mark(s.grade.detail.q3.score)}</td><td>${mark(s.grade.detail.q4.score)}</td><td><details><summary>답안 보기</summary>${['q1','q2','q3','q4'].map(q=>`<b>${labels[q]}</b><div class="answer-view">${escapeHtml(s.answers[q]||'')}</div><div class="small">핵심어: ${(s.grade.detail[q].hit||[]).join(', ')||'-'}</div><img class="draw-thumb" src="${s.drawings[q]||''}" alt="${labels[q]} 손글씨">`).join('<hr>')}</details></td></tr>`).join(''); }
+async function renderDash(){
+ if(!FIREBASE_DB_URL){ $('#countStat').textContent='제출 0명'; $('#avgStat').textContent='평균 0점'; $('#rows').innerHTML='<tr><td colspan="7">⚠️ 제출 서버 주소가 아직 설정되지 않았어요. HTML 파일의 FIREBASE_DB_URL 값을 채워주세요.</td></tr>'; return; }
+ const raw=await fetchSubmissions();
+ if(raw===null){ $('#rows').innerHTML='<tr><td colspan="7">불러오기에 실패했어요. 인터넷 연결을 확인하고 새로고침 해주세요.</td></tr>'; return; }
+ const arr=sortByNum(raw);
+ $('#countStat').textContent=`제출 ${arr.length}명`;
+ const avg=arr.length?Math.round(arr.reduce((a,b)=>a+(b.grade?.total||0),0)/arr.length):0;
+ $('#avgStat').textContent=`평균 ${avg}점`;
+ $('#rows').innerHTML=arr.map(s=>`<tr><td><b>${s.num||'-'}번 ${s.name}</b><div class="small">${s.submittedAt||''}</div></td><td>${mark(s.grade.total)} /100</td><td>${mark(s.grade.detail.q1.score)}</td><td>${mark(s.grade.detail.q2.score)}</td><td>${mark(s.grade.detail.q3.score)}</td><td>${mark(s.grade.detail.q4.score)}</td><td><details><summary>답안 보기</summary>${['q1','q2','q3','q4'].map(q=>`<b>${labels[q]}</b><div class="answer-view">${escapeHtml(s.answers[q]||'')}</div><div class="small">핵심어: ${(s.grade.detail[q].hit||[]).join(', ')||'-'}</div><img class="draw-thumb" src="${s.drawings[q]||''}" alt="${labels[q]} 손글씨">`).join('<hr>')}</details></td></tr>`).join('') || '<tr><td colspan="7" class="small">아직 제출한 학생이 없어요.</td></tr>';
+}
 function escapeHtml(t){return (t||'').replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]))}
-$('#csvBtn').onclick=()=>{ const arr=JSON.parse(localStorage.getItem('kimsoyeon2_submissions')||'[]'); const header=['번호','이름','총점','1-1','1-2','2-1','2-2','제출시각','답1','답2','답3','답4']; const rows=arr.map(s=>[s.num,s.name,s.grade.total,s.grade.detail.q1.score,s.grade.detail.q2.score,s.grade.detail.q3.score,s.grade.detail.q4.score,s.submittedAt,s.answers.q1,s.answers.q2,s.answers.q3,s.answers.q4]); const csv=[header,...rows].map(r=>r.map(v=>'"'+String(v||'').replace(/"/g,'""')+'"').join(',')).join('\n'); const blob=new Blob(['﻿'+csv],{type:'text/csv;charset=utf-8'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='도둑맞은_김소연_2차시_제출현황.csv'; a.click(); };
-$('#wipeBtn').onclick=()=>{ if(confirm('제출 자료를 모두 삭제할까요?')){localStorage.removeItem('kimsoyeon2_submissions'); renderDash(); toast('삭제했습니다');} };
+$('#refreshBtn').onclick=()=>renderDash();
+$('#csvBtn').onclick=async ()=>{
+ const raw=await fetchSubmissions();
+ if(!raw || !raw.length){ toast('내려받을 제출 자료가 없어요'); return; }
+ const arr=sortByNum(raw);
+ const header=['번호','이름','총점','1-1','1-2','2-1','2-2','제출시각','답1','답2','답3','답4'];
+ const rows=arr.map(s=>[s.num,s.name,s.grade.total,s.grade.detail.q1.score,s.grade.detail.q2.score,s.grade.detail.q3.score,s.grade.detail.q4.score,s.submittedAt,s.answers.q1,s.answers.q2,s.answers.q3,s.answers.q4]);
+ const csv=[header,...rows].map(r=>r.map(v=>'"'+String(v||'').replace(/"/g,'""')+'"').join(',')).join('\n');
+ const blob=new Blob(['﻿'+csv],{type:'text/csv;charset=utf-8'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='도둑맞은_김소연_2차시_제출현황.csv'; a.click();
+};
+$('#wipeBtn').onclick=async ()=>{
+ if(!FIREBASE_DB_URL){ toast('제출 서버 주소가 설정되지 않았어요'); return; }
+ if(!confirm('제출 자료를 모두 삭제할까요? 모든 학생 기기에서 다시는 볼 수 없게 됩니다.')) return;
+ try{ await fetch(`${FIREBASE_DB_URL}/submissions.json`,{method:'DELETE'}); toast('삭제했습니다'); renderDash(); }
+ catch(e){ toast('삭제 실패, 인터넷 연결을 확인하세요'); }
+};
 </script>
 </body>
 </html>
